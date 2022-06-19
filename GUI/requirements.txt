@@ -3,3 +3,4 @@ kivy-deps.angle
 kivy-deps.glew
 kivy-deps.gstreamer
 kivy-deps.sdl2
+kivyMD

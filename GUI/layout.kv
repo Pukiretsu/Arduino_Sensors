@@ -2,18 +2,27 @@ Screen:
     BoxLayout:
         orientation: 'vertical'
         MDToolbar:
-            title: "MDToolbar"
+            id: md_Toolbar
+            title: "Bienvenido"
             left_action_items: [["menu", lambda x: nav_draw.set_state()]]
         Widget:
     MDNavigationLayout:    
         ScreenManager:
             id: screen_manager
             Screen:
+                name: "index_point"
+                MDLabel:
+                    id: Texts
+                    text: "Conecta tu dispositivo al arduino"
+                    halign: "center"
+            
+            Screen:
                 name: "scr1"
                 MDLabel:
                     id: Texto
                     text: "Inicio"
                     halign: "center"
+                    
                 MDRaisedButton:
                     text: 'Generar Texto'
                     pos_hint: {'center_x': 0.5,'center_y': 0.4}
@@ -40,19 +49,21 @@ Screen:
                 Image:
                     id: avatar
                     size_hint: None, None
-                    size: "56dp", "56dp"
-                    source: "data/logo/kivy-icon-256.png"
-    
-            MDLabel:
-                text: "Jaja xd"
-                font_style: "Button"
-                size_hint_y: None
-                height: self.texture_size[1]
+                    size: "50dp", "50dp"
+                    source: "GUI/assets/appico.png"
         
+                MDLabel:
+                    text: "Arduino Connect"
+                    font_style: "H5"
+                    size_hint_y: None
+                    halign: "center"
+                    height: self.texture_size[1]
+            
             MDLabel:
-                text: "Textooo"
-                font_style: "Caption"
+                text: "Estado: "
+                font_style: "H6"
                 size_hint_y: None
+                halign: "center"
                 height: self.texture_size[1]
             
             ScrollView:
@@ -62,9 +73,10 @@ Screen:
                             nav_draw.set_state("close")
                             screen_manager.current = "scr1"
     
-                        text: "Home"
+                        text: "Temperatura y Humedad"
                         IconLeftWidget:
-                            icon: "home"
+                            icon: "thermometer-lines"
+
     
                     OneLineAvatarListItem:
                         on_press:
