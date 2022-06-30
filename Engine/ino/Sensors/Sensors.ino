@@ -8,19 +8,23 @@
 // Declaracion de Variables Globales
 String date;
 File dataFile;
-float _TempS1, _TempS2, _TempS3, _TempS4, _TempS5; // Para almacenar la temperatura de los sensores
-// Ubicacion de sensores en cada pin
-
-String getDataTime() 
+float _Temp[3]; // Para almacenar la temperatura de los sensores
+String filename;
+ 
+String getData() 
 {
+  // Funcion que obtiene el dato de la fecha desde una comunicación bluetooth
   String BTdata = "";
+  // Reiniciamos los puertos de serial
+  Serial.end();
+  delay(1000);
+  Serial.begin(9600);
   while(1)
   {
-    Serial.print("Iniciando servicio bluetooth...");
+    Serial.println('t');
+    delay(1000);
     if(Serial.available()) // Si existe algo en el buffer inicia la operacion
     {
-      Serial.println("Ok...");
-
       // Inicio de ciclo de recepcion de datos
       while(Serial.available())
       {
@@ -67,23 +71,28 @@ void setup()
   Serial.println("Ok...");
   
   //Obteniendo la fecha y hora desde comunicacion BT
-  date = getDataTime();
+  Serial.println("Iniciando servicio bluetooth...");
+  date = getData();
+  Serial.println("Ok...");
+  
   //Creacion del archivo en la SD
   Serial.print("Iniciando archivo de datos en la SD...");
-  String filename = date.substring(0,8) + ".csv";
+  filename = date.substring(0,8) + ".csv";
+  // Comprobamos que el archivo exista y sea valido
   if(SD.exists(filename))
   {
     Serial.println("Ok...");
-    Serial.println("CSV configurado...");
+    Serial.println("CSV ya configurado...");
   }
   else
   {
     dataFile = SD.open(filename, FILE_WRITE);
     if (dataFile)
     {
+      // Se configura el archivo CSV en caso de no estar creado y se ubican los encabezados
       Serial.println("Ok...");
       Serial.print("Configurando CSV...");
-      dataFile.println("S1,S2,S3,S4,S5,TimeStamp");
+      dataFile.println("T_s,T_in,T_amb,TimeStamp");
       dataFile.close();
       Serial.print("Ok...");
     }
@@ -95,6 +104,35 @@ void setup()
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  date = getData();
+  filename = date.substring(0,8) + ".csv";
+  dataFile = SD.open(filename, FILE_WRITE);
+  // Leemos la temperatura
+  for (int i = 0; i < 3; i++)
+  {
+    // Leemos la temperatura
+    _Temp[i] = analogRead(i);
+    
+    // Calculamos la temperatura
+    _Temp[i] = (1.1 * _Temp[i] * 100.0)/1024.0;
 
+    // Se envia el dato al puerto serial
+    Serial.print(_Temp[i]);
+    Serial.print(",");
+    
+    // Se transcribe el dato a la SD
+    if (dataFile)
+    {
+      dataFile.print(_Temp[i]);
+      dataFile.print(",");
+    }
+  }
+  // Se pone el timeStamp
+  Serial.print(date.substring(9,17));
+  Serial.print("\n");
+  dataFile.println(date.substring(9,17));
+  dataFile.close();
+
+  // Esperamos un tiempo para repetir el loop
+  delay(3000);
 }

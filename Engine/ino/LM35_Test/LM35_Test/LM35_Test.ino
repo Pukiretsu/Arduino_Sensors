@@ -1,6 +1,5 @@
 // Declaracion de variables globales
-float tempC; // Variable para almacenar el valor obtenido del sensor (0 a 1023)
-int pinLM35 = 0; // Variable del pin de entrada del sensor (A0)
+float Temp; // Variable para almacenar el valor obtenido del sensor (0 a 1023)
  
 void setup() {
   // Cambiamos referencia de las entradas analógicas
@@ -11,17 +10,17 @@ void setup() {
 }
  
 void loop() {
-  // Con analogRead leemos el sensor, recuerda que es un valor de 0 a 1023
-  tempC = analogRead(pinLM35); 
-   
-  // Calculamos la temperatura con la fórmula
-  tempC = (1.1 * tempC * 100.0)/1024.0; 
- 
-  // Envia el dato al puerto serial
-  Serial.print(tempC);
-  // Salto de línea
-  Serial.print("\n");
-  
+
+  // Leemos la temperatura
+  Temp = analogRead(0);
+    
+  // Calculamos la temperatura
+  Temp = (1.1 * Temp * 100.0)/1024.0;
+
+  // Se envia el dato al puerto serial
+  Serial.print("La temperatura es: ");
+  Serial.print(Temp);
+  Serial.println(" °C");
   // Esperamos un tiempo para repetir el loop
-  delay(1000);
+  delay(10000);
 }

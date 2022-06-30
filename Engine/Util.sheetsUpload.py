@@ -1,22 +1,24 @@
 import pygsheets as psh
-import pandas as pd
 
 # We make an auth entrypoint
+values = {'T superficial': '',
+          'T interna': '',
+          'T alrededores': '',
+          'Tiempo': ''}
+
+key = list(values.keys())
+
+
+# Configuramos la hoja de google sheets
 _Service = psh.authorize(service_file="Engine\Keys\PybotKey.json")
-
-
-df = pd.DataFrame()
-
-df['Esto fue'] = ['Enviado', 'desde', 'python', '😎']
-
-sH = _Service.open("GoogleSheetTest")
-
-workSheet = sH[0]
-
-workSheet.set_dataframe(df, (1,1)) # Column - Row
-
-
-
+sheets = _Service.open("PruebaPybot")
+hoja = "lol"
+try:
+    worksheet = sheets.worksheet_by_title(hoja)
+except:
+    sheets.add_worksheet(hoja)
+    worksheet = sheets.worksheet_by_title(hoja)
+    
 
 
 
